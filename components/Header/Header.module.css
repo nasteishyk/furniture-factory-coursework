@@ -1,0 +1,40 @@
+.base {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  background-color: rgb(36, 24, 8);
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+}
+
+.alignment {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.5;
+  text-align: center;
+  color: #ffffff;
+}
+
+.nav {
+  display: flex;
+  gap: 45px;
+}
+
+.navItem {
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.navItem:hover {
+  scale: 1.12;
+  text-shadow: 0px 0px 8px rgb(255, 255, 255);
+}
