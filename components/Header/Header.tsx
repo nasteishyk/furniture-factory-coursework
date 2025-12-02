@@ -1,66 +1,87 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import s from "./Header.module.css";
 
 export default function Header() {
-  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) setUser(JSON.parse(stored));
   }, []);
 
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    router.push("/");
   };
 
+  const isAdmin = user?.role === "admin";
+
   return (
-    <div className={s.base}>
+    <header className={s.base}>
       <div className="container">
         <div className={s.alignment}>
-          <Link href="/">
-            <h2 className={s.title}>Cozy Nest</h2>
-          </Link>
-          <nav className={s.nav}>
-            <Link href="/" className={s.navItem}>
-              Home
-            </Link>
-            <Link href="/chairs" className={s.navItem}>
-              Chairs
-            </Link>
-            <Link href="/sofas" className={s.navItem}>
-              Sofas
-            </Link>
-            <Link href="/desks" className={s.navItem}>
-              Desks
-            </Link>
-            <Link href="/cart" className={s.navItem}>
-              Cart
-            </Link>
+          <h2 className={s.title}>Cozy Nest</h2>
 
-            {user ? (
+          <nav className={s.nav}>
+            {isAdmin && (
               <>
-                {user.role === "admin" && (
-                  <Link href="/admin" className={s.navItem}>
-                    Admin
-                  </Link>
-                )}
-                <span className={s.navItem}>{user.name}</span>
-                <button className={s.navBtn} onClick={handleLogout}>
+                <Link href="/profile" className={s.navItem}>
+                  Profile
+                </Link>
+
+                <Link className={s.navItem} href="/admin">
+                  Admin Panel
+                </Link>
+
+                <button onClick={logout} className={s.logoutBtn}>
                   Logout
                 </button>
               </>
-            ) : (
-              <Link href="/auth" className={s.navItem}>
-                Change role
-              </Link>
+            )}
+
+            {!isAdmin && (
+              <>
+                <Link className={s.navItem} href="/">
+                  Home
+                </Link>
+                <Link className={s.navItem} href="/chairs">
+                  Chairs
+                </Link>
+                <Link className={s.navItem} href="/sofas">
+                  Sofas
+                </Link>
+                <Link className={s.navItem} href="/desks">
+                  Desks
+                </Link>
+                <Link className={s.navItem} href="/cart">
+                  Cart
+                </Link>
+
+                {user ? (
+                  <>
+                    <Link href="/profile" className={s.navItem}>
+                      Profile
+                    </Link>
+                    <button onClick={logout} className={s.logoutBtn}>
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link className={s.navItem} href="/auth/login">
+                    LOG IN / SIGN IN
+                  </Link>
+                )}
+              </>
             )}
           </nav>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

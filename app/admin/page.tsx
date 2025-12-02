@@ -1,99 +1,127 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import s from "./page.module.css";
-import { Product } from "@/types/product";
+import { useState, useEffect } from "react";
+import css from "./page.module.css";
 
-export default function AdminPage() {
-  const router = useRouter();
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category_id: number;
+}
+ 
+export default function AdminPanel() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState<number>(0);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState("1");
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-      router.push("/auth");
-      return;
-    }
-    const parsed = JSON.parse(user);
-    if (parsed.role !== "admin") {
-      router.push("/");
-    }
-  }, [router]);
-
+  // ==== FETCH PRODUCTS ====
   const fetchProducts = async () => {
-    const res = await fetch("/api/products");
+    const res = await fetch("/api/admin/products");
     const data = await res.json();
     setProducts(data);
-  };
-
-  const handleAdd = async () => {
-    if (!title || !price) return;
-    const res = await fetch("/api/products", {
-      method: "POST",
-      body: JSON.stringify({ title, price }),
-    });
-    const newProduct = await res.json();
-    setProducts([...products, newProduct]);
-    setTitle("");
-    setPrice(0);
-  };
-
-  const handleDelete = async (id: number) => {
-    await fetch(`/api/products/${id}`, { method: "DELETE" });
-    setProducts(products.filter((p) => p.id !== id));
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  return (
-    <div className={s.container}>
-      <h1 className={s.title}>Admin dashboard</h1>
+  // ==== ADD PRODUCT ====
+  const addProduct = async () => {
+    if (!name || !price) return;
 
-      <div className={s.addProduct}>
+    await fetch("/api/admin/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        price: Number(price),
+        category_id: Number(categoryId),
+      }),
+    });
+
+    setName("");
+    setPrice("");
+    fetchProducts();
+  };
+
+  // ==== DELETE PRODUCT ====
+  const deleteProduct = async (id: number) => {
+    await fetch(`/api/admin/products?id=${id}`, {
+      method: "DELETE",
+    });
+
+    fetchProducts();
+  };
+
+  return (
+    <div className={css.container}>
+      <h2 className={css.title}>Admin Panel</h2>
+
+      {/* ADD PRODUCT */}
+      <div className={css.addProduct}>
         <input
-          className={s.input}
-          placeholder="Product title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          className={css.input}
+          placeholder="Назва товару"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
+
         <input
-          className={s.input}
-          placeholder="Price"
-          type="number"
+          className={css.input}
+          placeholder="Ціна"
           value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
+          onChange={(e) => setPrice(e.target.value)}
+          type="number"
         />
-        <button className={s.button} onClick={handleAdd}>
-          Add Product
+
+        <select
+          className={css.input}
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+        >
+          <option value="1">Chairs</option>
+          <option value="2">Desks</option>
+          <option value="3">Sofas</option>
+        </select>
+
+        <button className={css.button} onClick={addProduct}>
+          Додати
         </button>
       </div>
 
-      <table className={s.table}>
+      {/* TABLE */}
+      <table className={css.table}>
         <thead>
-          <tr className={s.tr}>
-            <th className={s.th}>Title</th>
-            <th className={s.th}>Price</th>
-            <th className={s.th}>Stock</th>
-            <th className={s.th}>Actions</th>
+          <tr className={css.tr}>
+            <th className={css.th}>ID</th>
+            <th className={css.th}>Назва</th>
+            <th className={css.th}>Ціна</th>
+            <th className={css.th}>Категорія</th>
+            <th className={css.th}>Дія</th>
           </tr>
         </thead>
+
         <tbody>
           {products.map((p) => (
-            <tr className={s.tr} key={p.id}>
-              <td className={s.td}>{p.title}</td>
-              <td className={s.td}>${p.price}</td>
-              <td className={s.td}>{p.stock || 0}</td>
-              <td className={s.td}>
+            <tr key={p.id} className={css.tr}>
+              <td className={css.td}>{p.id}</td>
+              <td className={css.td}>{p.name}</td>
+              <td className={css.td}>{p.price} грн</td>
+              <td className={css.td}>
+                {p.category_id === 1
+                  ? "Chairs"
+                  : p.category_id === 2
+                  ? "Desks"
+                  : "Sofas"}
+              </td>
+              <td className={css.td}>
                 <button
-                  className={s.deleteBtn}
-                  onClick={() => handleDelete(p.id)}
+                  className={css.deleteBtn}
+                  onClick={() => deleteProduct(p.id)}
                 >
-                  Delete
+                  Видалити
                 </button>
               </td>
             </tr>

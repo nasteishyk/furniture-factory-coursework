@@ -9,7 +9,7 @@ export default async function Chairs() {
 
   return (
     <div className="section">
-      <h2 className="category-title">Chairs</h2>
+      <h2>Chairs</h2>
       <ProductGrid products={items} />
       </div>
   );

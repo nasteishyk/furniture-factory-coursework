@@ -5,6 +5,7 @@
   justify-content: space-between;
   display: flex;
   flex-direction: row;
+  margin-bottom: 32px;
 }
 
 .alignment {
@@ -38,3 +39,18 @@
   scale: 1.12;
   text-shadow: 0px 0px 8px rgb(255, 255, 255);
 }
+
+.logoutBtn {
+  padding: 4px 10px;
+  background-color: rgba(108, 75, 75, 0.313);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logoutBtn:hover {
+  background-color:rgba(108, 75, 75, 0.642);
+}
+

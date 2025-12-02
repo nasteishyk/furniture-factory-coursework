@@ -17,7 +17,7 @@ interface ProductGridProps {
 
 export default function ProductGrid({ products }: ProductGridProps) {
   return (
-    <div className={styles.grid}>
+    <div className={`${styles.grid} section`}>
       {products.map((product) => (
         <ProductCard key={product.id} {...product} />
       ))}

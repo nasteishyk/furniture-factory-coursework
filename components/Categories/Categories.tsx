@@ -6,7 +6,6 @@ import s from "./Categories.module.css";
 function Categories() {
   return (
     <div className="section">
-      <h3 className={s.title}>Categories</h3>
       <ul className={s.list}>
         <li className={s.item}>
           <Link href="/chairs">

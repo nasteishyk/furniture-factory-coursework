@@ -23,9 +23,9 @@ export default function ProductCard({
   return (
     <div className={styles.card}>
       <img src={image_url} alt={title} className={styles.image} />
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <span>${price}</span>
+      <h3 className={styles.title}>{title}</h3>
+      <p className={styles.description}>{description}</p>
+      <span className={styles.price}>${price}</span>
 
       <button
         className={styles.btn}

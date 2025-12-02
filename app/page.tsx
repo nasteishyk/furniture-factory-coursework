@@ -1,6 +1,6 @@
 import Categories from "@/components/Categories/Categories";
 import s from "./page.module.css";
-import ProductCard from "@/components/ProductCard/ProductCard";
+import ProductGrid from "@/components/ProductGrid/ProductGrid";
 
 export default async function Home() {
   const res = await fetch("http://localhost:3000/api/products", {
@@ -11,11 +11,7 @@ export default async function Home() {
   return (
     <>
       <Categories />
-      <div className={s.wrapper}>
-        {products.map((p: any) => (
-          <ProductCard key={p.id} {...p} />
-        ))}
-      </div>
+      <ProductGrid products={products} />
     </>
   );
 }
